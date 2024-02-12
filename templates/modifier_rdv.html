@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://i.postimg.cc/PrS877rS/Cabinet-accueil-icone-action.webp" type="image/x-icon">
+    <title>Modifier le rendez-vous</title>
+</head>
+<body>
+    <h2>Modifier le rendez-vous</h2>
+<form method="post" action="{{ url_for('modifier_rdv', rdv_id=rdv_id) }}">
+    <label for="nouvelle_date">Nouvelle date :</label>
+    <input type="date" id="nouvelle_date" name="nouvelle_date" required>
+    <label for="nouvelle_heure">Nouvelle heure :</label>
+    <input type="time" id="nouvelle_heure" name="nouvelle_heure" required>
+    <button type="submit">Modifier</button>
+</form>
+</body>
+</html>

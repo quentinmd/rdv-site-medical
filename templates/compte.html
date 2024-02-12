@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://i.postimg.cc/PrS877rS/Cabinet-accueil-icone-action.webp" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_compte.css') }}" />
+    <title>Page de Compte</title>
+</head>
+<body>
+  <div class="container">
+    <div id="compte" class="user-info">
+      <img src="assets/user.png" <p> Connecté en tant que : {{ current_user.username }}</p>
+      <a href="{{ url_for('logout') }}" class="button">Déconnexion</a>
+    </div>
+    <h1>Bienvenue sur votre page de compte {{ username }} !</h1>
+    <p>C'est ici que vous pouvez gérer votre compte.</p>
+    <a href="/prendre-rdv" class="button">Prendre rendez-vous</a>
+    <img src="assets/location-pointer.png"> <a href="https://maps.app.goo.gl/4YGSsyFVmBs8YS2x5" class="button" target="_blank">Se rendre au cabinet</a>
+    <ul class="liste">
+      <h3>Les prochains rdv :</h3>
+      {% for rdv in rendez_vous %}
+        <li>
+          {% if rdv[0] is string %}
+            {{ rdv[0] }} à {{ rdv[1] }}
+          {% else %}
+            {{ rdv[0].strftime('%d %B %Y à %H:%M') }}
+          {% endif %}
+          <!-- Vérifiez si le tuple a un élément à l'index 2 avant d'y accéder -->
+          {% if rdv|length >= 3 %}
+          <!--<form action="{{ url_for('modifier_rdv', rdv_id=rdv[2]) }}" method="post" style="display:inline;">
+            <button type="submit" class="modifier-button">Modifier</button>
+          </form>
+          <form action="{{ url_for('supprimer_rdv', rdv_id=rdv[2]) }}" method="post" style="display:inline;">
+            <button type="submit" class="supprimer-button">Supprimer</button>
+          </form>
+          -->
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</body>
+</html>

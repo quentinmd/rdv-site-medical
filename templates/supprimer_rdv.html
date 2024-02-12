@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://i.postimg.cc/PrS877rS/Cabinet-accueil-icone-action.webp" type="image/x-icon">
+    <title>Supprimer le rendez-vous</title>
+</head>
+<body>
+    <h2>Supprimer le rendez-vous</h2>
+    <p>Êtes-vous sûr de vouloir supprimer ce rendez-vous ?</p>
+    <form method="post" action="{{ url_for('supprimer_rdv', rdv_id=rdv_id) }}">
+        <button type="submit">Confirmer la suppression</button>
+    </form>
+</body>
+</html>

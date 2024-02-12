@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="shortcut icon" href="https://i.postimg.cc/PrS877rS/Cabinet-accueil-icone-action.webp" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_rdv.css') }}" />
+    <title>Prendre rendez-vous</title>
+</head>
+<body>
+    <form action="/confirmer-rdv" method="post" class="appointment-form">
+        <h2>Prendre rendez-vous</h2>
+        <label for="date">Choisissez le jour :</label>
+        <input type="text" id="datepicker" name="date" class="date-picker">
+
+        <label for="heure">Choisissez l'heure :</label>
+        <select name="heure" id="heure" class="time-slot">
+            <option value="9:00">9:00</option>
+            <option value="9:30">9:30</option>
+            <option value="10:00">10:00</option>
+            <option value="10:30">10:30</option>
+            <option value="11:00">11:00</option>
+            <option value="11:30">11:30</option>
+            <option value="12:00">12:00</option>
+            <option value="14:00">14:00</option>
+            <option value="14:30">14:30</option>
+            <option value="15:00">15:00</option>
+            <option value="15:30">15:30</option>
+            <option value="16:00">16:00</option>
+            <option value="16:30">16:30</option>
+            <option value="17:00">17:00</option>
+            <option value="17:30">17:30</option>
+            <option value="18:00">18:00</option>
+        </select>
+        <input type="submit" value="Confirmer le rendez-vous">
+    </form>
+    <script>
+        $(document).ready(function () {
+            // Initialisez le datepicker avec la locale française
+            $("#datepicker").datepicker({
+                dateFormat: 'dd-mm-yy',
+                onSelect: function (dateText) {
+                    $('#calendar').fullCalendar('gotoDate', dateText);
+                },
+                // Ajoutez les options de localisation pour la langue française
+                dayNames: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+                dayNamesMin: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+                monthNames: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+                monthNamesShort: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"]
+            });
+    
+            // Initialisez le calendrier (FullCalendar)
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                // ... autres options du calendrier ...
+            });
+        });
+    </script>
+</body>
+</html>

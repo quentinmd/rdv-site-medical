@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://i.postimg.cc/PrS877rS/Cabinet-accueil-icone-action.webp" type="image/x-icon">
+    <title>Mes Rendez-vous</title>
+</head>
+<body>
+    <h1>Mes Rendez-vous</h1>
+    <ul>
+        {% for rdv in rdvs %}
+            <li>{{ rdv.date }} à {{ rdv.heure }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
