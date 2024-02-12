@@ -1,2 +1,0 @@
-Code du bouton connexion :
-<button type="button" onclick="submitForm()">Se connecter</button>
