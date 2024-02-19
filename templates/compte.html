@@ -29,15 +29,15 @@
           <!-- Vérifiez si le tuple a un élément à l'index 2 avant d'y accéder -->
           {% if rdv|length >= 3 %}
           <form action="{{ url_for('modifier_rdv', rdv_id=rdv[2]) }}" method="post" style="display:inline;">
-              <button type="submit" class="modifier-button">Modifier</button>
+            <button type="submit" class="modifier-button">Modifier</button>
           </form>
           <form action="{{ url_for('supprimer_rdv', rdv_id=rdv[2]) }}" method="post" style="display:inline;">
-              <button type="submit" class="supprimer-button">Supprimer</button>
+            <button type="submit" class="supprimer-button">Supprimer</button>
           </form>
           <img src="{{ url_for('static', filename='qr_codes/' + rdv[2] + '.png') }}" alt="QR Code">
           {% endif %}
         </li>
-        {% endfor %}
+      {% endfor %}
     </ul> 
   </div>
 </body>
