@@ -4,6 +4,11 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import sqlite3
 from flask_bcrypt import Bcrypt
 from datetime import datetime
+import qrcode
+import os
+import random
+import string
+import csv
 
 app = Flask(__name__, static_folder='assets')
 app.secret_key = 'f42a73054b1749f8f58848be5e6502c'
@@ -12,17 +17,19 @@ login_manager.login_view = 'index'
 
 
 class User(UserMixin):
-    def __init__(self, user_id, username, password):
+    def __init__(self, user_id, username, password, is_admin=False):
         self.id = user_id
         self.username = username
         self.password = password
-
+        self.is_admin = is_admin
+        self.rendez_vous = charger_rendez_vous_de_csv('rendez_vous.csv')
 
 @login_manager.user_loader
 def load_user(user_id):
     user_info = get_user_info(user_id)
     if user_info:
-        user = User(user_info['id'], user_info['username'], user_info['password'])
+        is_admin = user_info.get('is_admin', False)
+        user = User(user_info['id'], user_info['username'], user_info['password'], is_admin=is_admin)
         return user
     else:
         return None
@@ -52,11 +59,31 @@ def get_user_info(user_id):
     else:
         return None
 
+#génération qr-code
+def generer_qr_code(contenu, nom_fichier):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(contenu)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+    img.save(nom_fichier)
+
+def generer_chaine_aleatoire(longueur=10):
+    caracteres = string.ascii_letters
+    return ''.join(random.choice(caracteres) for _ in range(longueur))
+
+# QR-code
+contenu_qr = generer_chaine_aleatoire()
+generer_qr_code(contenu_qr, "qr_code.png")
 
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 bcrypt = Bcrypt(app)
 
@@ -238,10 +265,19 @@ def prendre_rdv():
         # Récupérer les données du formulaire de rendez-vous
         date = request.form['date']
         heure = request.form['heure']
+        
+        # Générer un contenu unique pour le QR code
+        contenu_qr = generer_chaine_aleatoire()
+        
+        # Générer le nom de fichier pour le QR code
+        nom_fichier_qr = f"static/qr_codes/{contenu_qr}.png"
+        
+        # Générer le QR code
+        generer_qr_code(contenu_qr, nom_fichier_qr)
+        
         # Ajouter le code pour enregistrer le rendez-vous dans la base de données
         return redirect(url_for('compte'))
     return render_template('prendre-rdv.html')
-
 
 @app.route('/admin')
 
@@ -332,4 +368,4 @@ def get_user_id(username):
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=8080)
+    app.run(debug=True, port=8080)
