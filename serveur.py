@@ -316,26 +316,6 @@ def confirmation():
     return "Votre demande a été soumise avec succès. Vous serez informé une fois qu'elle sera approuvée."
 
 
-def ajouter_rendez_vous_au_csv(nouveau_rendez_vous, fichier_csv):
-    with open(fichier_csv, mode='a', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow([nouveau_rendez_vous['id'], nouveau_rendez_vous['user_id'], nouveau_rendez_vous['datetime']])
-
-def charger_rendez_vous_de_csv(nom_fichier):
-    rendez_vous = []
-
-    # Lire les rendez-vous à partir du fichier CSV
-    with open(nom_fichier, 'r', newline='') as fichier_csv:
-        reader = csv.DictReader(fichier_csv)
-        for row in reader:
-            rendez_vous.append(row)
-
-    return rendez_vous
-
-# Appel de la fonction pour charger les rendez-vous à partir du fichier CSV
-rendez_vous = charger_rendez_vous_de_csv('rendez_vous.csv')
-print(rendez_vous)  # Afficher les rendez-vous chargés depuis le fichier CSV
-
 def get_user_id(username):
     conn = sqlite3.connect('instance/ma_base_de_donnees.db')
     cursor = conn.cursor()
