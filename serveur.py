@@ -243,6 +243,99 @@ def prendre_rdv():
     return render_template('prendre-rdv.html')
 
 
+@app.route('/admin')
+
+def admin():
+
+    return render_template('admin.html')
+
+
+def get_all_rendez_vous():
+    conn = sqlite3.connect('instance/ma_base_de_donnees.db')
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT datetime FROM rendez_vous')
+    rendez_vous = cursor.fetchall()
+
+    conn.close()
+
+    return rendez_vous
+
+# Route pour afficher le formulaire de demande de statut d'administrateur
+@app.route('/request_admin', methods=['GET', 'POST'])
+def request_admin():
+    if request.method == 'POST':
+        # Récupérer l'identifiant de l'utilisateur soumettant la demande
+        user_id = request.form['user_id']
+
+        # Enregistrer la demande dans la base de données
+        conn = sqlite3.connect('instance/ma_base_de_donnees.db')
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO admin_requests (user_id, status) VALUES (?, "pending")', (user_id,))
+        conn.commit()
+        conn.close()
+
+        # Rediriger l'utilisateur vers une page de confirmation ou autre
+        return redirect(url_for('confirmation'))
+
+    # Afficher le formulaire de demande de statut d'administrateur
+    return render_template('request_admin.html')
+
+# Route pour afficher les demandes de statut d'administrateur en attente
+@app.route('/admin/requests')
+def admin_requests():
+    # Récupérer les demandes en attente depuis la base de données
+    conn = sqlite3.connect('instance/ma_base_de_donnees.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM admin_requests WHERE status="pending"')
+    requests = cursor.fetchall()
+    conn.close()
+
+    # Afficher les demandes dans un modèle de page HTML
+    return render_template('admin_requests.html', requests=requests)
+
+# Route pour approuver ou refuser une demande de statut d'administrateur
+@app.route('/admin/requests/<int:request_id>/approve')
+def approve_request(request_id):
+    # Mettre à jour le statut de la demande dans la base de données
+    conn = sqlite3.connect('instance/ma_base_de_donnees.db')
+    cursor = conn.cursor()
+    cursor.execute('UPDATE admin_requests SET status="approved" WHERE id=?', (request_id,))
+    conn.commit()
+
+    # Effectuer d'autres actions, telles que la mise à jour des privilèges de l'utilisateur dans la table des utilisateurs
+
+    conn.close()
+
+    # Rediriger l'administrateur vers la liste des demandes de statut d'administrateur
+    return redirect(url_for('admin_requests'))
+
+# Route pour le formulaire de demande de statut d'administrateur
+@app.route('/confirmation')
+def confirmation():
+    return "Votre demande a été soumise avec succès. Vous serez informé une fois qu'elle sera approuvée."
+
+
+def ajouter_rendez_vous_au_csv(nouveau_rendez_vous, fichier_csv):
+    with open(fichier_csv, mode='a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([nouveau_rendez_vous['id'], nouveau_rendez_vous['user_id'], nouveau_rendez_vous['datetime']])
+
+def charger_rendez_vous_de_csv(nom_fichier):
+    rendez_vous = []
+
+    # Lire les rendez-vous à partir du fichier CSV
+    with open(nom_fichier, 'r', newline='') as fichier_csv:
+        reader = csv.DictReader(fichier_csv)
+        for row in reader:
+            rendez_vous.append(row)
+
+    return rendez_vous
+
+# Appel de la fonction pour charger les rendez-vous à partir du fichier CSV
+rendez_vous = charger_rendez_vous_de_csv('rendez_vous.csv')
+print(rendez_vous)  # Afficher les rendez-vous chargés depuis le fichier CSV
+
 def get_user_id(username):
     conn = sqlite3.connect('instance/ma_base_de_donnees.db')
     cursor = conn.cursor()
