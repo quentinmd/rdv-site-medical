@@ -4,7 +4,6 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import sqlite3
 from flask_bcrypt import Bcrypt
 from datetime import datetime
-import qrcode
 import os
 import random
 import string
@@ -59,27 +58,9 @@ def get_user_info(user_id):
     else:
         return None
 
-#génération qr-code
-def generer_qr_code(contenu, nom_fichier):
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-    qr.add_data(contenu)
-    qr.make(fit=True)
-
-    img = qr.make_image(fill_color="black", back_color="white")
-    img.save(nom_fichier)
-
 def generer_chaine_aleatoire(longueur=10):
     caracteres = string.ascii_letters
     return ''.join(random.choice(caracteres) for _ in range(longueur))
-
-# QR-code
-contenu_qr = generer_chaine_aleatoire()
-generer_qr_code(contenu_qr, "qr_code.png")
 
 @app.route('/')
 def index():
@@ -265,15 +246,6 @@ def prendre_rdv():
         # Récupérer les données du formulaire de rendez-vous
         date = request.form['date']
         heure = request.form['heure']
-        
-        # Générer un contenu unique pour le QR code
-        contenu_qr = generer_chaine_aleatoire()
-        
-        # Générer le nom de fichier pour le QR code
-        nom_fichier_qr = f"static/qr_codes/{contenu_qr}.png"
-        
-        # Générer le QR code
-        generer_qr_code(contenu_qr, nom_fichier_qr)
         
         # Ajouter le code pour enregistrer le rendez-vous dans la base de données
         return redirect(url_for('compte'))
